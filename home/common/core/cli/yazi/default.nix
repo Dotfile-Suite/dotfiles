@@ -91,8 +91,13 @@
         { on = "M"; run = "plugin mount"; desc = "Mount manager"; }
         { on = "<C-d>"; run = "plugin diff"; desc = "Diff against hovered"; }
 
-        # Yank the absolute path to the Wayland clipboard, not just yazi's.
-        { on = [ "y" "p" ]; run = ''shell -- printf "%s" "$@" | wl-copy''; desc = "Copy path to clipboard"; }
+        # Yank normally (so `p` still pastes inside yazi) *and* mirror the
+        # selection's absolute path(s) to the Wayland clipboard so they can
+        # be pasted outside yazi too. This has to stay a single `y` binding:
+        # a separate `y p` chord shadows the plain `y` yank entirely, since
+        # yazi then treats `y` as a chord prefix and only offers `p`,
+        # instead of yanking on its own.
+        { on = "y"; run = [ "yank" ''shell -- printf "%s\n" "$@" | wl-copy'' ]; desc = "Copy files (yank + clipboard)"; }
 
         # Open a shell in the current directory; exit returns to yazi.
         { on = "!"; run = ''shell "$SHELL" --block''; desc = "Shell here"; }
