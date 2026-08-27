@@ -118,10 +118,17 @@ window#waybar.swallowing {
   color: @text;
 }
 
-#battery {
-  /* Font Awesome 6 Free only ships the full icon set (incl. battery) in its
-     Solid (900) weight for free -- Regular is Pro-only and mostly empty, so
-     without this the Font Awesome fallback above still renders as tofu. */
+/* Font Awesome 6 Free only ships the full icon set in its Solid (900) weight
+   for free -- Regular is Pro-only and mostly empty. #battery's icons are all
+   from that fallback so it always needed this. #network and #pulseaudio are
+   mixed: some of their icons (e.g. the microphone and bluetooth glyphs) come
+   straight from Iosevka Nerd Font and render at any weight, but others (wifi,
+   ethernet, the headphone glyph) aren't in Iosevka's table and fall through
+   to the same empty Font Awesome Regular face without this, rendering as
+   tofu. */
+#battery,
+#network,
+#pulseaudio {
   font-weight: 900;
 }
 
