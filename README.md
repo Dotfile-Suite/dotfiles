@@ -205,6 +205,15 @@ age identity and re-creating each secret's plaintext from scratch:
    not decrypting the old one -- that's the part that's unrecoverable).
 3. Copy the new `keys.txt` to every machine and rebuild each one.
 
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0
+or later -- see [`LICENSE`](./LICENSE). Portions derived from the original
+nixos-hyprland base remain available under the MIT terms preserved in
+[`LICENSE-MIT`](./LICENSE-MIT); see [`NOTICE.md`](./NOTICE.md) for how the
+two apply. The project name and branding are governed separately by
+[`TRADEMARK.md`](./TRADEMARK.md).
+
 ## Acknowledgements
 
 - [Dileep Kishore's nix config](https://github.com/dileep-kishore/nixos-hyprland) The framework my NixOS distro is based off of
