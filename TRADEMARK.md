@@ -6,8 +6,8 @@ running modified versions — subject to AGPL's own conditions (in
 particular, source disclosure for modified network services, per §13).
 
 **Copyright and trademark are separate.** The license above does not grant
-any right to use the project's name, "Dotfile Suite" branding, or logo.
-That is governed by this policy instead.
+any right to use the project's name, "Dotfile Suite", "DFSuite", "DFS",
+branding, or logo. That is governed by this policy instead.
 
 ## What's protected
 
@@ -28,7 +28,8 @@ That is governed by this policy instead.
 ## What requires permission
 
 - Using the project name or logo as the name/branding of a modified fork,
-  derivative application, or hosted service.
+  derivative application, or hosted service. The goal is to set and enforce
+  quality, reliability, and integration standards.
 - Any use that could suggest your version is the official release, or is
   endorsed/maintained by the project.
 
