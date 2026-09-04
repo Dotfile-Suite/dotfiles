@@ -95,6 +95,30 @@
       #    #'';
       #  })
       #);
+
+      # Every host below is built the same way, differing only in which
+      # ./hosts/<name> directory gets imported -- see hosts/example-*/default.nix
+      # for what actually distinguishes client/server/standalone. Add a new
+      # machine by adding one line to nixosConfigurations below (and a
+      # matching hosts/<name>/ and home/<name>.nix, see bootstrap.sh).
+      mkHost = name:
+        lib.nixosSystem {
+          specialArgs = {inherit inputs outputs username;};
+          modules = [
+            ./hosts/${name}
+
+            catppuccin.nixosModules.catppuccin
+            home-manager.nixosModules.home-manager
+
+            ({config, ...}: {
+              home-manager.backupFileExtension = "bak";
+              home-manager.extraSpecialArgs = {
+                inherit inputs outputs username;
+                inherit (config.networking) hostName;
+              };
+            })
+          ];
+        };
     in {
       inherit lib;
 
@@ -104,82 +128,10 @@
 
       devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
 
-      nixosConfigurations = {
-        # Desktop
-        example-pc = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs username;};
-          modules = [
-            ./hosts/example-pc
-
-            catppuccin.nixosModules.catppuccin
-            home-manager.nixosModules.home-manager
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs username;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-
-        # Laptop
-        example-laptop = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs username;};
-          modules = [
-            ./hosts/example-laptop
-
-            home-manager.nixosModules.home-manager
-            catppuccin.nixosModules.catppuccin
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs username;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-
-        # New Laptop (Zenbook)
-        example-zenbook = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs username;};
-          modules = [
-            ./hosts/example-zenbook
-
-            home-manager.nixosModules.home-manager
-            catppuccin.nixosModules.catppuccin
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs username;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-
-        # steam-machine
-        steam-machine = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs username;};
-          modules = [
-            ./hosts/steam-machine
-
-            home-manager.nixosModules.home-manager
-            catppuccin.nixosModules.catppuccin
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs username;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-      };
+      nixosConfigurations = lib.genAttrs [
+        "example-client"
+        "example-server"
+        "example-standalone"
+      ] mkHost;
     };
 }

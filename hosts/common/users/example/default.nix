@@ -14,7 +14,7 @@ in {
 
   users.users.${username} = {
     isNormalUser = true;
-    description = "Isaac George";
+    description = "Example User";
     shell = pkgs.zsh;
     extraGroups = ["networkmanager" "wheel" "dialout"] ++ ifTheyExist ["wireshark" "docker" "libvirtd" "mysql" "network" "git"];
     packages = [pkgs.home-manager];

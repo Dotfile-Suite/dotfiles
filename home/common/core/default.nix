@@ -8,6 +8,7 @@
 }: {
   imports = [
     inputs.nix-index-database.homeModules.nix-index
+    ../lib/host-profile.nix
     ./cli
     ./shells
     ./fonts.nix

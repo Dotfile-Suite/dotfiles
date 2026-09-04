@@ -153,7 +153,7 @@
 
   # Uncomment for Xbox controllers over Bluetooth (rumble + correct axis
   # mapping, which the in-kernel xpad driver doesn't do wirelessly).
-  # Most relevant on the steam-machine host.
+  # Most relevant on a gaming-oriented host.
   hardware.xpadneo.enable = true;
 
   # If you removed services.blueman.enable from default.nix, this line is

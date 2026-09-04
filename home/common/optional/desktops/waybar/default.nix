@@ -1,5 +1,7 @@
 # https://github.com/Alexays/Waybar
-{hostName, pkgs, ...}: {
+{config, lib, pkgs, ...}: let
+  cfg = config.hostProfile;
+in {
 
   home.packages = with pkgs; [
     wttrbar
@@ -20,19 +22,11 @@
         margin-bottom = 0;
         reload_style_on_change = true;
         spacing = 0;
-        # Only enable ouput on display port monitors
-        # For laptops, their screens are all eDP with
-        # HDMI out and for my desktop, my HDMI port is
-        # used for my secondary monitor so HDMI is
-        # exclusivly for secondary monitors and doesn't 
-        # need a waybar
-        output = if hostName == "steam-machine" then [ 
-          "!eDP-1" # All displays
-        ] else [
-          "eDP-1"
-          "DP-1"
-          "DP-2"
-        ];
+      } // lib.optionalAttrs (cfg.waybarOutputs != null) {
+        # Set via hostProfile.waybarOutputs; omitted entirely (== every
+        # output) unless a host opts in.
+        output = cfg.waybarOutputs;
+      } // {
         modules-left = [
           "hyprland/workspaces"
           "hyprland/window"
@@ -70,7 +64,7 @@
           format = "<i> </i>";
           separate-outputs = false;
           icon = true;
-          icon-size = if hostName == "example-zenbook" then 18 else 12;
+          icon-size = if cfg.hidpi then 18 else 12;
         };
 
         # Module configuration: Center

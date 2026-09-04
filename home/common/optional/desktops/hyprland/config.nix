@@ -4,39 +4,12 @@
   lib,
   ...
 }: let
-  isZenbook = hostName == "example-zenbook";
-  isPC = hostName == "example-pc";
-  isLaptop = hostName == "example-laptop";
-
-  # --- Monitors --------------------------------------------------------
-  # The only thing Nix knows that Lua can't: which machine this is.
-  monitors =
-    if isPC
-    then [
-      {
-        output = "DP-2";
-        mode = "highres";
-        position = "0x0";
-        scale = 1;
-      }
-      {
-        output = "HDMI-A-1";
-        mode = "highres";
-        position = "5120x0";
-        scale = 1;
-      }
-    ]
-    else [
-      {
-        output = "";
-        mode = "highres";
-        position = "auto";
-        scale = 1;
-      }
-    ];
+  # Machine-specific values -- set per-host via `hostProfile.*` (see
+  # home/common/lib/host-profile.nix) instead of branching on hostName here.
+  cfg = config.hostProfile;
 
   luaMonitor = m: ''      { output = "${m.output}", mode = "${m.mode}", position = "${m.position}", scale = ${toString m.scale} },'';
-  monitorsLua = lib.concatMapStringsSep "\n" luaMonitor monitors;
+  monitorsLua = lib.concatMapStringsSep "\n" luaMonitor cfg.monitors;
 
   # --- Theme (Catppuccin Mocha) ----------------------------------------
   # One palette, shared with hyprlock.nix. Nix owns it because more than one
@@ -46,13 +19,12 @@
   luaColor = name: value: ''    ${name} = "${value}",'';
   colorsLua = lib.concatStringsSep "\n" (lib.mapAttrsToList luaColor colors);
 
-  # --- Misc host-conditional scalars -----------------------------------
   sensitivity =
-    if isZenbook
+    if cfg.hidpi
     then "0.5"
     else "1";
   groupbarFontSize =
-    if isZenbook
+    if cfg.hidpi
     then "18"
     else "12";
 in {
@@ -94,15 +66,14 @@ in {
             kb_options         = "caps:escape",
             sensitivity        = ${sensitivity},
             groupbar_font_size = ${groupbarFontSize},
-            gestures           = ${lib.boolToString isZenbook},
+            gestures           = ${lib.boolToString cfg.hasTouchpad},
 
-            -- Only example-laptop is hybrid graphics (Intel card0 + Nvidia
-            -- card1, see hardware.nvidia.prime bus IDs in its host config).
-            -- Forcing this on single-GPU hosts makes wlroots wait on a
-            -- /dev/dri/card1 that never appears.
+            -- Set via hostProfile.hybridGpuDrmDevices. Forcing this on a
+            -- single-GPU host makes wlroots wait on a /dev/dri card that
+            -- never appears, so it stays nil unless a host opts in.
             drm_devices = ${
-              if isLaptop
-              then ''"/dev/dri/card0:/dev/dri/card1"''
+              if cfg.hybridGpuDrmDevices != null
+              then ''"${cfg.hybridGpuDrmDevices}"''
               else "nil"
             },
 
