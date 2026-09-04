@@ -22,7 +22,7 @@
         })
 
         # User config
-        ../common/users/mrgeotech
+        ../common/users/example
     ];
 
     # Bootloader
@@ -37,7 +37,7 @@
 
     networking = {
         networkmanager.wifi.powersave = true;
-        hostName = "mrgeotech-laptop";
+        hostName = "example-laptop";
         useNetworkd = true;
         interfaces.wlp5s0.useDHCP = true;
     };

@@ -65,6 +65,12 @@
       inherit (self) outputs;
       lib = nixpkgs.lib // home-manager.lib;
 
+      # Single source of truth for the primary user's name. Every module
+      # that needs it (system user account, home-manager, sops secret
+      # paths, autologin, ssh/wireguard paths, ...) reads this via
+      # specialArgs/extraSpecialArgs instead of hardcoding the string.
+      username = "example";
+
       systems = ["x86_64-linux"];
       forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
 
@@ -100,10 +106,10 @@
 
       nixosConfigurations = {
         # Desktop
-        mrgeotech-pc = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
+        example-pc = lib.nixosSystem {
+          specialArgs = {inherit inputs outputs username;};
           modules = [
-            ./hosts/mrgeotech-pc
+            ./hosts/example-pc
 
             catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
@@ -111,7 +117,7 @@
             ({config, ...}: {
               home-manager.backupFileExtension = "bak";
               home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
+                inherit inputs outputs username;
                 inherit (config.networking) hostName;
               };
             })
@@ -119,10 +125,10 @@
         };
 
         # Laptop
-        mrgeotech-laptop = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
+        example-laptop = lib.nixosSystem {
+          specialArgs = {inherit inputs outputs username;};
           modules = [
-            ./hosts/mrgeotech-laptop
+            ./hosts/example-laptop
 
             home-manager.nixosModules.home-manager
             catppuccin.nixosModules.catppuccin
@@ -130,7 +136,7 @@
             ({config, ...}: {
               home-manager.backupFileExtension = "bak";
               home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
+                inherit inputs outputs username;
                 inherit (config.networking) hostName;
               };
             })
@@ -138,10 +144,10 @@
         };
 
         # New Laptop (Zenbook)
-        mrgeotech-zenbook = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
+        example-zenbook = lib.nixosSystem {
+          specialArgs = {inherit inputs outputs username;};
           modules = [
-            ./hosts/mrgeotech-zenbook
+            ./hosts/example-zenbook
 
             home-manager.nixosModules.home-manager
             catppuccin.nixosModules.catppuccin
@@ -149,7 +155,7 @@
             ({config, ...}: {
               home-manager.backupFileExtension = "bak";
               home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
+                inherit inputs outputs username;
                 inherit (config.networking) hostName;
               };
             })
@@ -158,7 +164,7 @@
 
         # steam-machine
         steam-machine = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
+          specialArgs = {inherit inputs outputs username;};
           modules = [
             ./hosts/steam-machine
 
@@ -168,7 +174,7 @@
             ({config, ...}: {
               home-manager.backupFileExtension = "bak";
               home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
+                inherit inputs outputs username;
                 inherit (config.networking) hostName;
               };
             })

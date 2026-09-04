@@ -70,7 +70,7 @@
           format = "<i> </i>";
           separate-outputs = false;
           icon = true;
-          icon-size = if hostName == "mrgeotech-zenbook" then 18 else 12;
+          icon-size = if hostName == "example-zenbook" then 18 else 12;
         };
 
         # Module configuration: Center

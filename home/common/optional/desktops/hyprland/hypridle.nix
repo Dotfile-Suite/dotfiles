@@ -1,7 +1,7 @@
 { hostName, ... }:
 {
   services.hypridle = {
-    enable = hostName != "mrgeotech-pc";
+    enable = hostName != "example-pc";
     settings = {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";

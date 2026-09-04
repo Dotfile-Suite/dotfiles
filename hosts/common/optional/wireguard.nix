@@ -1,4 +1,4 @@
-{ip, ...}: {
+{ip}: {username, ...}: {
     networking.firewall = {
         allowedUDPPorts = [ 29566 ];
     };
@@ -16,13 +16,13 @@
             mtu = 1420;
 
             # Path to the private key file.
-            privateKeyFile = "/home/mrgeotech/.secrets/private_key";
+            privateKeyFile = "/home/${username}/.secrets/private_key";
 
             peers = [{
                 publicKey = "tpMbShmlXi3jr+W8BUHfek5EdzuOjXolmaHRXLSlvCA=";
-                presharedKeyFile = "/home/mrgeotech/.secrets/preshared_key";
+                presharedKeyFile = "/home/${username}/.secrets/preshared_key";
                 allowedIPs = [ "10.0.0.0/16" ];
-                endpoint = "vpn.mrgeotech.net:29566";
+                endpoint = "vpn.example.net:29566";
                 persistentKeepalive = 25;
             }];
         };

@@ -21,7 +21,7 @@ outputs,
     })
 
     # User config
-    ../common/users/mrgeotech
+    ../common/users/example
   ];
 
   # Bootloader
@@ -43,7 +43,7 @@ outputs,
 
   networking = {
     networkmanager.wifi.powersave = true;
-    hostName = "mrgeotech-zenbook";
+    hostName = "example-zenbook";
     interfaces.wlo1.useDHCP = true;
   };
 

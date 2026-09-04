@@ -3,7 +3,7 @@
 # Replaces zsh's history file with a SQLite database: fuzzy search, per-directory
 # filtering, exit codes, duration, and the host a command ran on. Local-only by
 # default -- nothing leaves the machine unless you run `atuin register`, which
-# would let mrgeotech-pc and mrgeotech-zenbook share one history (end-to-end
+# would let example-pc and example-zenbook share one history (end-to-end
 # encrypted, self-hostable).
 {
   programs.atuin = {

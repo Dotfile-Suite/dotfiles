@@ -6,13 +6,13 @@
 # the thing nixos-rebuild never had: a readable diff of what actually changed
 # between generations, rendered before it asks to proceed. Also folds
 # `nix-collect-garbage` into a scheduled unit with sane retention.
-{ config, ... }: {
+{ config, username, ... }: {
   programs.nh = {
     enable = true;
 
     # Point at your flake so `nh os switch` works from any directory.
     # Adjust if your checkout lives elsewhere.
-    flake = "/home/mrgeotech/nixos-config";
+    flake = "/home/${username}/nixos-config";
 
     clean = {
       enable = true;

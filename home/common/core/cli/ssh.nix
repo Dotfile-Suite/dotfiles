@@ -20,7 +20,7 @@
 
       # Default identity for every host: servers and GitHub alike. The
       # private key is decrypted via sops-nix, see
-      # hosts/common/users/mrgeotech/default.nix.
+      # hosts/common/users/example/default.nix.
       IdentityFile = "~/.ssh/id_ed25519";
 
       # Prefer post-quantum-hybrid key exchange so the transport resists

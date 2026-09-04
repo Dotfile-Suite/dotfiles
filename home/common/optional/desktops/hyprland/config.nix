@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  isZenbook = hostName == "mrgeotech-zenbook";
-  isPC = hostName == "mrgeotech-pc";
-  isLaptop = hostName == "mrgeotech-laptop";
+  isZenbook = hostName == "example-zenbook";
+  isPC = hostName == "example-pc";
+  isLaptop = hostName == "example-laptop";
 
   # --- Monitors --------------------------------------------------------
   # The only thing Nix knows that Lua can't: which machine this is.
@@ -96,7 +96,7 @@ in {
             groupbar_font_size = ${groupbarFontSize},
             gestures           = ${lib.boolToString isZenbook},
 
-            -- Only mrgeotech-laptop is hybrid graphics (Intel card0 + Nvidia
+            -- Only example-laptop is hybrid graphics (Intel card0 + Nvidia
             -- card1, see hardware.nvidia.prime bus IDs in its host config).
             -- Forcing this on single-GPU hosts makes wlroots wait on a
             -- /dev/dri/card1 that never appears.

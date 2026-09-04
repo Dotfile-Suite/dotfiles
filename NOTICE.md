@@ -1,6 +1,6 @@
 # License notice
 
-MrGeoTech's NixOS Config (Dotfile Suite)
+Example NixOS Config (Dotfile Suite)
 Copyright (C) 2024-present Isaac George
 
 This program is free software: you can redistribute it and/or modify it

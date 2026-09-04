@@ -1,6 +1,7 @@
 {
   config,
   outputs,
+  username,
   ...
 }: {
   imports = [
@@ -15,7 +16,7 @@
   ];
 
   home = {
-    username = "mrgeotech";
+    inherit username;
     homeDirectory = "/home/${config.home.username}";
     stateVersion = "26.05";
   };

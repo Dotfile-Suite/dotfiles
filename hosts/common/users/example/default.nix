@@ -2,15 +2,17 @@
   pkgs,
   config,
   inputs,
+  username,
   ...
 }: let
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
+  home = "/home/${username}";
 in {
   imports = [
     inputs.sops-nix.nixosModules.sops
   ];
 
-  users.users.mrgeotech = {
+  users.users.${username} = {
     isNormalUser = true;
     description = "Isaac George";
     shell = pkgs.zsh;
@@ -19,7 +21,7 @@ in {
   };
 
   sops = {
-    age.keyFile = "/home/mrgeotech/.config/sops/age/keys.txt";
+    age.keyFile = "${home}/.config/sops/age/keys.txt";
 
     # SSH identity used for server logins and GitHub auth (see
     # home/common/core/cli/ssh.nix for the client-side wiring). The
@@ -27,8 +29,8 @@ in {
     # with a real, locally-generated key -- see secrets/README.md.
     secrets."id_ed25519" = {
       sopsFile = ./secrets/ssh.yaml;
-      path = "/home/mrgeotech/.ssh/id_ed25519";
-      owner = "mrgeotech";
+      path = "${home}/.ssh/id_ed25519";
+      owner = username;
       mode = "0400";
       restartUnits = ["ssh-id-ed25519-pubkey.service"];
     };
@@ -44,11 +46,11 @@ in {
     wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
-      User = "mrgeotech";
-      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.openssh}/bin/ssh-keygen -y -f /home/mrgeotech/.ssh/id_ed25519 > /home/mrgeotech/.ssh/id_ed25519.pub'";
+      User = username;
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.openssh}/bin/ssh-keygen -y -f ${home}/.ssh/id_ed25519 > ${home}/.ssh/id_ed25519.pub'";
     };
   };
 
   # Import this user's personal/home configurations
-  home-manager.users.mrgeotech = import ../../../../home/${config.networking.hostName}.nix;
+  home-manager.users.${username} = import ../../../../home/${config.networking.hostName}.nix;
 }

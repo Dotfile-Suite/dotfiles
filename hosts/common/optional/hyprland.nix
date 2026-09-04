@@ -1,7 +1,7 @@
-{pkgs, lib, ...}: {
+{pkgs, lib, username, ...}: {
   # Login setup
   programs.uwsm.enable = true;
-  services.getty.autologinUser = "mrgeotech";
+  services.getty.autologinUser = username;
 
   programs.hyprland = {
     enable = true;

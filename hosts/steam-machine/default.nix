@@ -3,6 +3,7 @@
   config,
   inputs,
   outputs,
+  username,
   ...
 }: {
   imports = [
@@ -18,7 +19,7 @@
     ../common/optional/bluetooth.nix
 
     # User config
-    ../common/users/mrgeotech
+    ../common/users/example
   ];
 
   # Was previously its own hosts/common/optional/fonts.nix, imported
@@ -93,11 +94,11 @@
       SUBSYSTEM=="usb", ATTR{idVendor}=="09fb", ATTR{idProduct}=="6001", MODE="0666"
     '';
 
-    getty.autologinUser = "mrgeotech";
+    getty.autologinUser = username;
     displayManager = {
       autoLogin = {
         enable = true;
-        user = "mrgeotech";
+        user = username;
       };
     };
     xserver = {

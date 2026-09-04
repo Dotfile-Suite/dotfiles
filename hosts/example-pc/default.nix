@@ -20,7 +20,7 @@
     })
 
     # User config
-    ../common/users/mrgeotech
+    ../common/users/example
   ];
   powerManagement.cpuFreqGovernor = "performance";
   powerManagement.enable = true;
@@ -43,7 +43,7 @@
     networkmanager = {
       wifi.powersave = false;
     };
-    hostName = "mrgeotech-pc";
+    hostName = "example-pc";
     interfaces.wlo1.useDHCP = true;
   };
 

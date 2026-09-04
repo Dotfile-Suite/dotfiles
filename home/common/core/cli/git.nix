@@ -1,4 +1,4 @@
-{pkgs, ...} : {
+{pkgs, config, ...} : {
   programs.git = {
     enable = true;
     settings = {
@@ -16,17 +16,17 @@
       #    from = "Isaac George <git-mail@isaacgeorge.net>";
       #    smtpServer = "127.0.0.1";
       #    smtpServerPort = 1025;
-      #    smtpUser = "mrgeotech";
+      #    smtpUser = "example";
       #    smtpPassword = "/HxMou3HXfi+RaEAxry8w6Ws0tybPdVPHJxpSNvAC0I="; # This is a localhost only password so should be fine
       #};
     };
     signing = {
       # Reuses the sops-managed SSH identity (see
-      # hosts/common/users/mrgeotech/default.nix) instead of a separate GPG
+      # hosts/common/users/example/default.nix) instead of a separate GPG
       # key. Signs directly with the private key file rather than going
       # through ssh-agent, since nothing here loads this key into one.
       format = "ssh";
-      key = "/home/mrgeotech/.ssh/id_ed25519";
+      key = "${config.home.homeDirectory}/.ssh/id_ed25519";
       signer = "${pkgs.openssh}/bin/ssh-keygen";
       signByDefault = true;
     };

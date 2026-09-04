@@ -21,11 +21,11 @@ the key, recovering from a lost age key). Short version:
      echo "id_ed25519: |"
      sed 's/^/  /' /tmp/id_ed25519
    } > /tmp/ssh-secret.yaml
-   mv /tmp/ssh-secret.yaml hosts/common/users/mrgeotech/secrets/ssh.yaml
-   sops encrypt --in-place hosts/common/users/mrgeotech/secrets/ssh.yaml
+   mv /tmp/ssh-secret.yaml hosts/common/users/example/secrets/ssh.yaml
+   sops encrypt --in-place hosts/common/users/example/secrets/ssh.yaml
    ```
 
-   (`sops edit hosts/common/users/mrgeotech/secrets/ssh.yaml` also works if
+   (`sops edit hosts/common/users/example/secrets/ssh.yaml` also works if
    you'd rather edit interactively -- just make sure your editor isn't
    reindenting pasted text.)
 
@@ -36,7 +36,7 @@ the key, recovering from a lost age key). Short version:
 4. Delete both `/tmp/id_ed25519*` files.
 
 After a rebuild, the decrypted private key lands at `~/.ssh/id_ed25519`
-(mode `0400`, owned by `mrgeotech`) and is used as the default identity for
+(mode `0400`, owned by the primary user configured in `flake.nix`) and is used as the default identity for
 every SSH connection -- see `home/common/core/cli/ssh.nix`. A oneshot
 systemd service (`ssh-id-ed25519-pubkey.service`, wired via that secret's
 `restartUnits`) derives `~/.ssh/id_ed25519.pub` from it automatically on
