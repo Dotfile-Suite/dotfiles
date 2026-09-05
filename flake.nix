@@ -40,16 +40,6 @@
     ghostty = {
       url = "github:ghostty-org/ghostty";
     };
-
-    winapps = {
-      url = "github:winapps-org/winapps";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    labrador = {
-      url = "github:espotek-org/Labrador?rev=3119205cdde183039062621c1204584f1ec1c5ac";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
@@ -58,9 +48,8 @@
     home-manager,
     catppuccin,
     ghostty,
-    labrador,
     ...
-    } @ inputs: 
+    } @ inputs:
     let
       inherit (self) outputs;
       lib = nixpkgs.lib // home-manager.lib;
@@ -80,21 +69,6 @@
           config.allowUnfree = true;
         }
       );
-
-      #labrador-fixed = lib.genAttrs systems (system:
-      #  labrador.packages.${system}.default.overrideAttrs (old: {
-      #    src = pkgsFor.${system}.fetchFromGitHub {
-      #      owner = "espotek-org";
-      #      repo = "Labrador";
-      #      rev = "3119205cdde183039062621c1204584f1ec1c5ac";
-      #      hash = "sha256-ERSHtiuq1l3sEk5OdVxoG1ri/4HZ0Fi4KFkWW09ZKyI=";
-      #      fetchSubmodules = true;
-      #    };
-      #    #postPatch = ''
-      #    #  echo 'QMAKE_CFLAGS += -std=c11' >> Desktop_Interface/Labrador.pro
-      #    #'';
-      #  })
-      #);
 
       # Every host below is built the same way, differing only in which
       # ./hosts/<name> directory gets imported -- see hosts/example-*/default.nix

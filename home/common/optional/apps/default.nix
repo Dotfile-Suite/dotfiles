@@ -29,7 +29,6 @@ in
     ./gpg.nix
     ./gaming.nix
     ./vivaldi.nix
-    ./labrador.nix
   ];
   home.packages = with pkgs; [
     # System utilities

@@ -11,7 +11,6 @@
     ./keychron.nix
     ./pipewire.nix
     ./steam.nix
-    ./labrador.nix
   ];
 
   environment.systemPackages = with pkgs; [

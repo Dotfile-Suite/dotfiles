@@ -1,4 +1,4 @@
-{inputs, pkgs, ...} : {
+{pkgs, ...} : {
   virtualisation = {
     docker = {
       enable = true;
@@ -26,8 +26,6 @@
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   
   environment.systemPackages = with pkgs; [
-  #  inputs.winapps.packages.${pkgs.system}.winapps
-  #  inputs.winapps.packages.${pkgs.system}.winapps-launcher
   #  pkgs.freerdp
     #bottles
     dnsmasq
