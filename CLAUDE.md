@@ -22,25 +22,14 @@ justify speculative abstraction now — see "Build for what exists" below.
 - `flake.nix` — entry point. Defines `username`/`extraUsers`, the `mkHost`
   builder, and `nixosConfigurations`.
 - `hosts/` — per-machine NixOS config.
-  - `common/core/` — always-on system modules (nix settings, networking,
-    locale, zsh, gnupg, catppuccin).
   - `common/optional/` — opt-in system modules (hyprland, bluetooth,
     virtualisation, wireguard, ...). Never imported by an `example-*` host
     by default; a real host opts in explicitly.
-  - `common/users/example/` — parameterized user provisioning (primary
-    `username` + `extraUsers`), sops secrets, home-manager wiring.
-  - `example-client/`, `example-server/`, `example-standalone/` — minimal
-    host skeletons; see each one's own comment for its intended role.
 - `home/` — home-manager config, mirroring the same core/optional split.
-  - `base.nix` — minimal per-user base (generic CLI/shell core only).
-  - `example-*.nix` — per-host entry points, imported once per user on
-    that host (see `hosts/common/users/example/default.nix`).
 - `bootstrap.sh` — generates `hardware-configuration.nix` on the target
   machine and runs `nixos-install`/`nixos-rebuild switch`. Flakes can't
   shell out to `nixos-generate-config` themselves; this is the documented
   replacement.
-- `pkgs/` — custom package derivations (template stub today).
-- `.claude/skills/grug/` — invoke for a blunt complexity gut-check.
 
 ## Working with the flake
 
@@ -48,11 +37,7 @@ justify speculative abstraction now — see "Build for what exists" below.
 - Validate with `nix flake check`. Treat a red check like a compiler
   error — fix the cause, don't work around it (`--impure`, deleting the
   failing check, etc.).
-- New host: copy an `example-*` directory (or use `bootstrap.sh`), add one
-  name to the `nixosConfigurations` list in `flake.nix`, and add a matching
-  `home/<name>.nix`. `networking.hostName` derives from the directory name
-  automatically — nothing else needs editing for that.
-- New user on a host: add the name to `extraUsers` in `flake.nix`.
+- Adding a new host or user? See the `add-host-or-user` skill.
 - Rebuild with `nh os switch`, not raw `nixos-rebuild` — it shows a
   generation diff before applying and keeps GC history sane (see
   `hosts/common/core/nh.nix`).
@@ -119,12 +104,13 @@ thing first, generalize once a second real host actually needs it.
 ## Secrets
 
 Managed with sops-nix (see `hosts/common/users/example/default.nix` and
-`hosts/common/users/example/secrets/README.md`). Only ever commit
-*encrypted* secrets. The committed `secrets/ssh.yaml` is a placeholder and
-must be replaced with a real, locally-generated key before actual use — see
-that README for the walkthrough. Never commit an age private key or an
-unencrypted secret. Broader secrets-management follow-ups are tracked in
-`TODO.md`, not solved ad hoc inside unrelated changes.
+`hosts/common/users/example/secrets/README.md`). Never commit changes to 
+secrets or system-defined files besides moves done through `mv`. For 
+info on the secrets system, see that README for the walkthrough. Never 
+commit an age private key or an unencrypted secret. Broader secrets-
+management follow-ups are tracked in `TODO.md`, not solved ad hoc inside
+unrelated changes. Secrets management should be, in most cases, be left
+to the user.
 
 ## Do not
 
@@ -138,6 +124,8 @@ unencrypted secret. Broader secrets-management follow-ups are tracked in
   unblock a build. Fix the underlying issue instead.
 - Add a module or option speculatively "for later." Wait until something
   real needs it (see "Build for what exists").
+- If any command fails due to permissions, stop and request the user to
+  run the command
 
 ## Living documents
 
