@@ -154,7 +154,7 @@ if [ "$skip_secrets" -ne 1 ]; then
   require_sops() {
     command -v sops >/dev/null 2>&1 || {
       echo "sops is required to manage hosts/common/secrets/*.yaml." >&2
-      echo "Try: nix shell nixpkgs#sops" >&2
+      echo "Try: nix shell $repo_root#myPkgs.x86_64-linux.dfs-sops (or nixpkgs#sops)" >&2
       exit 1
     }
   }

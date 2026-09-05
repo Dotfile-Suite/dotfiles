@@ -34,7 +34,9 @@ justify speculative abstraction now — see "Build for what exists" below.
   switch`. Flakes can't shell out to `nixos-generate-config` themselves or
   read/write files outside the store during evaluation; this is the
   documented replacement for both.
-- `pkgs/` — custom package derivations (template stub today).
+- `pkgs/` — custom package derivations, including `dfs-*` ones built from
+  Dotfile-Suite forks of core dependencies (see "Forked dependencies"
+  below) rather than nixpkgs' own copy.
 - `.claude/skills/grug/` — invoke for a blunt complexity gut-check.
 
 ## Working with the flake
@@ -117,6 +119,30 @@ error. `./bootstrap.sh <host>` generates one automatically for any user
 missing it. Only ever commit *encrypted* secrets; never commit an age
 private key or an unencrypted one. Broader secrets-management follow-ups
 are tracked in `docs/TODO.md`, not solved ad hoc inside unrelated changes.
+
+## Forked dependencies
+
+Core dependencies get forked into `Dotfile-Suite/<name>` and stripped down
+to only what this project actually uses, then packaged here as `pkgs/dfs-
+<name>` instead of the nixpkgs original — not a user choice, a
+standardization: `dfs-sops` (`pkgs/dfs-sops/default.nix`) is the first one,
+built age-only with every other key-management backend removed. Two other
+repos are part of this pattern:
+
+- `Dotfile-Suite/<name>` — the fork itself. `dfs/overrides/` holds
+  whole-file replacements for whatever needs stripping (prefer this over a
+  line-based patch series — it can't fail to "apply" the way a diff can;
+  an actual API mismatch instead surfaces as a build error, which is
+  impossible to miss). `dfs/sync.sh` merges upstream in and reasserts the
+  overrides on top.
+- `Dotfile-Suite/template` — hosts the reusable `dfs-fork-sync.yml`
+  workflow that every fork's own thin `.github/workflows/dfs-sync.yml`
+  calls into: merge upstream, build, test, and only fast-forward `main` if
+  both pass; otherwise leave `main` untouched and file/update a GitHub
+  Issue. One shared pipeline, not one per fork.
+
+See `dfs-sops`'s own `dfs/README.md` for the concrete example before
+adding a second forked dependency.
 
 ## Do not
 
