@@ -13,7 +13,7 @@
     # Leave the up-arrow alone. Up should walk *this session's* history the way
     # it always has; Ctrl-R is where the fuzzy search lives. Rebinding both is
     # how atuin ends up feeling intrusive.
-    flags = [ "--disable-up-arrow" ];
+    flags = ["--disable-up-arrow"];
 
     settings = {
       # Vim keys in the search UI: opens in insert, Esc drops to normal, then
@@ -43,14 +43,14 @@
 
       # Don't record these.
       history_filter = [
-        "^ "            # leading space = private, same convention as HISTCONTROL
-        "^sudo -S"      # piping a password in
+        "^ " # leading space = private, same convention as HISTCONTROL
+        "^sudo -S" # piping a password in
         "^pass "
         "^sops "
       ];
 
       dialect = "us";
-      update_check = false;  # Nix handles updates
+      update_check = false; # Nix handles updates
     };
   };
 }

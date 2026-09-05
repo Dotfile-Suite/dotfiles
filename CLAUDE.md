@@ -2,8 +2,8 @@
 
 Guidance for Claude Code (and any other agent or contributor) working in this
 repository. This document sets intentions, not a spec for a finished system —
-see [REDESIGN.md](REDESIGN.md) for where the project is headed and
-[TODO.md](TODO.md) for known, deferred gaps.
+see [REDESIGN.md](docs/REDESIGN.md) for where the project is headed and
+[TODO.md](docs/TODO.md) for known, deferred gaps.
 
 ## What this is
 
@@ -13,7 +13,7 @@ and `hosts/common/users/example` are templates, not a description of any real
 machine. A real deployment copies a template (see `bootstrap.sh`) and
 customizes it; nothing personal or hardware-specific belongs in `common/`.
 
-The long-term direction (REDESIGN.md) is a local-first, actor-model computing
+The long-term direction (docs/REDESIGN.md) is a local-first, actor-model computing
 suite spanning one machine to many. That vision is aspirational. Don't let it
 justify speculative abstraction now — see "Build for what exists" below.
 
@@ -22,23 +22,12 @@ justify speculative abstraction now — see "Build for what exists" below.
 - `flake.nix` — entry point. Defines `username`/`extraUsers`, the `mkHost`
   builder, and `nixosConfigurations`.
 - `hosts/` — per-machine NixOS config.
-  - `common/core/` — always-on system modules (nix settings, networking,
-    locale, zsh, gnupg, catppuccin).
   - `common/optional/` — opt-in system modules (hyprland, bluetooth,
     virtualisation, wireguard, ...). Never imported by an `example-*` host
     by default; a real host opts in explicitly.
-  - `common/users/example/` — parameterized user provisioning (primary
-    `username` + `extraUsers`) and home-manager wiring; delegates each
-    user's SSH/git identity to `common/secrets/`.
-  - `common/secrets/` — per-user sops secrets. `default.nix` is a curried
-    module (`{name}: {...}: {...}`, same pattern as `optional/wireguard.nix`)
-    imported once per user; see its own comments and `README.md`.
-  - `example-client/`, `example-server/`, `example-standalone/` — minimal
-    host skeletons; see each one's own comment for its intended role.
+  - `common/secrets/` — per-user sops secrets; see the "Secrets" section
+    below.
 - `home/` — home-manager config, mirroring the same core/optional split.
-  - `base.nix` — minimal per-user base (generic CLI/shell core only).
-  - `example-*.nix` — per-host entry points, imported once per user on
-    that host (see `hosts/common/users/example/default.nix`).
 - `bootstrap.sh` — generates `hardware-configuration.nix` on the target
   machine, ensures every configured user has a `common/secrets/<user>.yaml`
   (generating one if missing), and runs `nixos-install`/`nixos-rebuild
@@ -54,11 +43,7 @@ justify speculative abstraction now — see "Build for what exists" below.
 - Validate with `nix flake check`. Treat a red check like a compiler
   error — fix the cause, don't work around it (`--impure`, deleting the
   failing check, etc.).
-- New host: copy an `example-*` directory (or use `bootstrap.sh`), add one
-  name to the `nixosConfigurations` list in `flake.nix`, and add a matching
-  `home/<name>.nix`. `networking.hostName` derives from the directory name
-  automatically — nothing else needs editing for that.
-- New user on a host: add the name to `extraUsers` in `flake.nix`.
+- Adding a new host or user? See the `add-host-or-user` skill.
 - Rebuild with `nh os switch`, not raw `nixos-rebuild` — it shows a
   generation diff before applying and keeps GC history sane (see
   `hosts/common/core/nh.nix`).
@@ -113,7 +98,7 @@ outside the declarative config, mutating a generation in place).
 well-trodden NixOS module option before hand-rolling a systemd unit or a
 new abstraction. An abstraction earns its place once the same pattern
 shows up for real three times — not on the first guess at what might be
-needed. This applies to REDESIGN.md's own ambitions too: prove one small
+needed. This applies to docs/REDESIGN.md's own ambitions too: prove one small
 piece works before generalizing it.
 
 **Build for what exists.**
@@ -133,7 +118,7 @@ missing it — that's the normal path, not the manual `sops`/`ssh-keygen`
 walkthrough in the README (kept there as a fallback and for reference).
 Only ever commit *encrypted* secrets; never commit an age private key or
 an unencrypted one. Broader secrets-management follow-ups are tracked in
-`TODO.md`, not solved ad hoc inside unrelated changes.
+`docs/TODO.md`, not solved ad hoc inside unrelated changes.
 
 ## Do not
 
@@ -147,10 +132,12 @@ an unencrypted one. Broader secrets-management follow-ups are tracked in
   unblock a build. Fix the underlying issue instead.
 - Add a module or option speculatively "for later." Wait until something
   real needs it (see "Build for what exists").
+- If any command fails due to permissions, stop and request the user to
+  run the command
 
 ## Living documents
 
-- [REDESIGN.md](REDESIGN.md) — long-term vision. Aspirational, not a spec
+- [REDESIGN.md](docs/REDESIGN.md) — long-term vision. Aspirational, not a spec
   for the current task.
-- [TODO.md](TODO.md) — real, deferred, non-blocking follow-ups. Prune items
+- [TODO.md](docs/TODO.md) — real, deferred, non-blocking follow-ups. Prune items
   as they're resolved.

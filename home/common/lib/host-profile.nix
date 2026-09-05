@@ -46,13 +46,32 @@
     monitors = lib.mkOption {
       type = lib.types.listOf (lib.types.submodule {
         options = {
-          output = lib.mkOption {type = lib.types.str; default = "";};
-          mode = lib.mkOption {type = lib.types.str; default = "highres";};
-          position = lib.mkOption {type = lib.types.str; default = "auto";};
-          scale = lib.mkOption {type = lib.types.numbers.positive; default = 1;};
+          output = lib.mkOption {
+            type = lib.types.str;
+            default = "";
+          };
+          mode = lib.mkOption {
+            type = lib.types.str;
+            default = "highres";
+          };
+          position = lib.mkOption {
+            type = lib.types.str;
+            default = "auto";
+          };
+          scale = lib.mkOption {
+            type = lib.types.numbers.positive;
+            default = 1;
+          };
         };
       });
-      default = [{output = ""; mode = "highres"; position = "auto"; scale = 1;}];
+      default = [
+        {
+          output = "";
+          mode = "highres";
+          position = "auto";
+          scale = 1;
+        }
+      ];
       description = "Hyprland monitor layout for this host.";
     };
 

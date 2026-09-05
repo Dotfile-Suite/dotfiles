@@ -3,7 +3,7 @@
 # Ctrl-R is atuin's: both fzf and atuin bind it by default, and atuin's init
 # (see cli/atuin.nix) sources after fzf's, so fzf's binding is disabled below
 # to avoid the conflict rather than relying on source order.
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
@@ -105,5 +105,5 @@
     }
   '';
 
-  home.packages = [ pkgs.jq ];  # used by fnix above
+  home.packages = [pkgs.jq]; # used by fnix above
 }

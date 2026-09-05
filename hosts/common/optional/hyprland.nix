@@ -1,4 +1,9 @@
-{pkgs, lib, username, ...}: {
+{
+  pkgs,
+  lib,
+  username,
+  ...
+}: {
   # Login setup
   programs.uwsm.enable = true;
   services.getty.autologinUser = username;
@@ -22,5 +27,5 @@
     ];
   };
 
-  environment.systemPackages = with pkgs; [ hyprpolkitagent ];
+  environment.systemPackages = with pkgs; [hyprpolkitagent];
 }

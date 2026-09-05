@@ -13,7 +13,7 @@
     extraOptions = [
       "--group-directories-first"
       "--header"
-      "--hyperlink"        # Ghostty makes filenames clickable / ctrl-clickable
+      "--hyperlink" # Ghostty makes filenames clickable / ctrl-clickable
       "--time-style=long-iso"
     ];
   };

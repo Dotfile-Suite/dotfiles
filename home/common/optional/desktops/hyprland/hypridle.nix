@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+{config, ...}: {
   services.hypridle = {
     enable = config.hostProfile.idleLockEnable;
     settings = {

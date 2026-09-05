@@ -1,4 +1,4 @@
-{pkgs, ...} : {
+{pkgs, ...}: {
   virtualisation = {
     docker = {
       enable = true;
@@ -23,10 +23,10 @@
   };
   services.spice-vdagentd.enable = true;
   programs.virt-manager.enable = true;
-  networking.firewall.trustedInterfaces = [ "virbr0" ];
-  
+  networking.firewall.trustedInterfaces = ["virbr0"];
+
   environment.systemPackages = with pkgs; [
-  #  pkgs.freerdp
+    #  pkgs.freerdp
     #bottles
     dnsmasq
   ];

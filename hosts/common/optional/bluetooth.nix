@@ -111,7 +111,7 @@
 
       # Codec preference order. PipeWire negotiates the best mutually
       # supported one; listing them makes the intent explicit.
-      "bluez5.codecs" = [ "ldac" "aptx_hd" "aptx" "aac" "sbc_xq" "sbc" ];
+      "bluez5.codecs" = ["ldac" "aptx_hd" "aptx" "aac" "sbc_xq" "sbc"];
     };
   };
 

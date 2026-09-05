@@ -1,6 +1,6 @@
 # example-server -- generic, minimal host skeleton.
 #
-# Intended role (see REDESIGN.md): headless, hosts data/services that one
+# Intended role (see docs/REDESIGN.md): headless, hosts data/services that one
 # or more example-client machines connect to. Deliberately bare for now --
 # boot loader, networking, and the shared core/user modules only. Copy this
 # directory (bootstrap.sh does this for you) to start a real machine, then

@@ -49,76 +49,78 @@
     catppuccin,
     ghostty,
     ...
-    } @ inputs:
-    let
-      inherit (self) outputs;
-      lib = nixpkgs.lib // home-manager.lib;
+  } @ inputs: let
+    inherit (self) outputs;
+    lib = nixpkgs.lib // home-manager.lib;
 
-      # Single source of truth for the primary user's name. Every module
-      # that needs it (system user account, home-manager, sops secret
-      # paths, autologin, ssh/wireguard paths, ...) reads this via
-      # specialArgs/extraSpecialArgs instead of hardcoding the string.
-      username = "example";
+    # Single source of truth for the primary user's name. Every module
+    # that needs it (system user account, home-manager, sops secret
+    # paths, autologin, ssh/wireguard paths, ...) reads this via
+    # specialArgs/extraSpecialArgs instead of hardcoding the string.
+    username = "example";
 
-      # Additional, non-admin accounts for a shared/multi-user machine.
-      # Each one gets an ordinary user account, the same home-manager
-      # config as the primary user, and their own sops-managed SSH/git
-      # identity (see hosts/common/users/example/default.nix and
-      # hosts/common/secrets/) -- just not the primary's admin groups.
-      # Empty by default; add names here for a real multi-user host, e.g.
-      # [ "alice" "bob" ].
-      extraUsers = [];
+    # Additional, non-admin accounts for a shared/multi-user machine.
+    # Each one gets an ordinary user account, the same home-manager
+    # config as the primary user, and their own sops-managed SSH/git
+    # identity (see hosts/common/users/example/default.nix and
+    # hosts/common/secrets/) -- just not the primary's admin groups.
+    # Empty by default; add names here for a real multi-user host, e.g.
+    # [ "alice" "bob" ].
+    extraUsers = [];
 
-      systems = ["x86_64-linux"];
-      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+    systems = ["x86_64-linux"];
+    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
 
-      pkgsFor = lib.genAttrs systems (system:
+    pkgsFor = lib.genAttrs systems (
+      system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         }
-      );
+    );
 
-      # Every host below is built the same way, differing only in which
-      # ./hosts/<name> directory gets imported -- see hosts/example-*/default.nix
-      # for what actually distinguishes client/server/standalone. Add a new
-      # machine by adding one line to nixosConfigurations below (and a
-      # matching hosts/<name>/ and home/<name>.nix, see bootstrap.sh).
-      mkHost = name:
-        lib.nixosSystem {
-          specialArgs = {inherit inputs outputs username extraUsers;};
-          modules = [
-            ./hosts/${name}
+    # Every host below is built the same way, differing only in which
+    # ./hosts/<name> directory gets imported -- see hosts/example-*/default.nix
+    # for what actually distinguishes client/server/standalone. Add a new
+    # machine by adding one line to nixosConfigurations below (and a
+    # matching hosts/<name>/ and home/<name>.nix, see bootstrap.sh).
+    mkHost = name:
+      lib.nixosSystem {
+        specialArgs = {inherit inputs outputs username extraUsers;};
+        modules = [
+          ./hosts/${name}
 
-            catppuccin.nixosModules.catppuccin
-            home-manager.nixosModules.home-manager
+          catppuccin.nixosModules.catppuccin
+          home-manager.nixosModules.home-manager
 
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs username extraUsers;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-    in {
-      inherit lib;
+          ({config, ...}: {
+            home-manager.backupFileExtension = "bak";
+            home-manager.extraSpecialArgs = {
+              inherit inputs outputs username extraUsers;
+              inherit (config.networking) hostName;
+            };
+          })
+        ];
+      };
+  in {
+    inherit lib;
 
-      # Authoritative user list for tooling (bootstrap.sh) that needs it
-      # without re-deriving/guessing it in bash: `nix eval --json .#users`.
-      users = [username] ++ extraUsers;
+    # Authoritative user list for tooling (bootstrap.sh) that needs it
+    # without re-deriving/guessing it in bash: `nix eval --json .#users`.
+    users = [username] ++ extraUsers;
 
-      myPkgs = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+    myPkgs = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
 
-      formatter = forEachSystem (pkgs: pkgs.alejandra);
+    formatter = forEachSystem (pkgs: pkgs.alejandra);
 
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
 
-      nixosConfigurations = lib.genAttrs [
+    nixosConfigurations =
+      lib.genAttrs [
         "example-client"
         "example-server"
         "example-standalone"
-      ] mkHost;
-    };
+      ]
+      mkHost;
+  };
 }

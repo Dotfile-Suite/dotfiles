@@ -6,7 +6,11 @@
 # the thing nixos-rebuild never had: a readable diff of what actually changed
 # between generations, rendered before it asks to proceed. Also folds
 # `nix-collect-garbage` into a scheduled unit with sane retention.
-{ config, username, ... }: {
+{
+  config,
+  username,
+  ...
+}: {
   programs.nh = {
     enable = true;
 

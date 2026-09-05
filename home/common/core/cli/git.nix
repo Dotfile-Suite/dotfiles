@@ -1,4 +1,8 @@
-{pkgs, config, ...} : {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.git = {
     enable = true;
     settings = {
@@ -39,9 +43,9 @@
     lfs.enable = true;
     ignores = [
       ".direnv/"
-        ".devenv/"
-        ".venv/"
-        ".env"
+      ".devenv/"
+      ".venv/"
+      ".env"
     ];
   };
   home.packages = with pkgs; [

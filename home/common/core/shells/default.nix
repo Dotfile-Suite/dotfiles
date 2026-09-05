@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./bash.nix
     ./zsh.nix
@@ -22,7 +26,7 @@
     # ps
     ps = "ps auxf";
     psgrep = "ps aux | grep -v grep | grep -i -e VSZ -e";
-    # nix operations 
+    # nix operations
     update = "( cd /etc/nixos/ && nh os switch ${config.home.homeDirectory}/dotfiles#$(hostname) )";
     update-versions = "( cd /etc/nixos/ && nix flake update )";
     clean-system = "sudo nix-collect-garbage --delete-older-than 2d --cores 16 && nix-collect-garbage --delete-older-than 2d --cores 16";
