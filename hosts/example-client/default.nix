@@ -1,6 +1,6 @@
 # example-client -- generic, minimal host skeleton.
 #
-# Intended role (see REDESIGN.md): a machine that's mostly a thin
+# Intended role (see docs/REDESIGN.md): a machine that's mostly a thin
 # display/UI, leaning on an example-server for data and services rather
 # than hosting them itself. Deliberately bare for now -- boot loader,
 # networking, and the shared core/user modules only. Copy this directory

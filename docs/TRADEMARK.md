@@ -1,6 +1,6 @@
 # Trademark & branding policy
 
-The AGPL-3.0 license covering this project's code (see `LICENSE`) grants
+The AGPL-3.0 license covering this project's code (see `../LICENSE`) grants
 broad rights to use, copy, modify, and redistribute the code, including
 running modified versions — subject to AGPL's own conditions (in
 particular, source disclosure for modified network services, per §13).

@@ -8,7 +8,7 @@
   # home/common/lib/host-profile.nix) instead of branching on hostName here.
   cfg = config.hostProfile;
 
-  luaMonitor = m: ''      { output = "${m.output}", mode = "${m.mode}", position = "${m.position}", scale = ${toString m.scale} },'';
+  luaMonitor = m: ''{ output = "${m.output}", mode = "${m.mode}", position = "${m.position}", scale = ${toString m.scale} },'';
   monitorsLua = lib.concatMapStringsSep "\n" luaMonitor cfg.monitors;
 
   # --- Theme (Catppuccin Mocha) ----------------------------------------
@@ -16,7 +16,7 @@
   # program needs it; the whole attrset is handed to Lua as vars.colors.
   colors = import ./colors.nix;
 
-  luaColor = name: value: ''    ${name} = "${value}",'';
+  luaColor = name: value: ''${name} = "${value}",'';
   colorsLua = lib.concatStringsSep "\n" (lib.mapAttrsToList luaColor colors);
 
   sensitivity =
@@ -72,10 +72,10 @@ in {
             -- single-GPU host makes wlroots wait on a /dev/dri card that
             -- never appears, so it stays nil unless a host opts in.
             drm_devices = ${
-              if cfg.hybridGpuDrmDevices != null
-              then ''"${cfg.hybridGpuDrmDevices}"''
-              else "nil"
-            },
+            if cfg.hybridGpuDrmDevices != null
+            then ''"${cfg.hybridGpuDrmDevices}"''
+            else "nil"
+          },
 
             colors = {
           ${colorsLua}

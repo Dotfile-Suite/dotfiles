@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   catppuccinOhMyZsh = ''
     PROMPT='%F{green}%t%f %F{yellow}%~%f %F{white}>%f '
     RPS1='%F$(git_prompt_info) %{$fg_bold[blue]%}%m%{$reset_color%}'
@@ -9,8 +13,7 @@ let
     ZSH_THEME_GIT_PROMPT_CLEAN=""
     ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%} ⚡%{$fg[yellow]%}"
   '';
-in
-{
+in {
   home.file.".config/oh-my-zsh/custom/themes/catppuccin.zsh-theme".text = catppuccinOhMyZsh;
 
   programs.zsh = {
@@ -28,7 +31,7 @@ in
       save = 100000;
       ignoreDups = true;
       ignoreAllDups = true;
-      ignoreSpace = true;      # leading space keeps a command out of history
+      ignoreSpace = true; # leading space keeps a command out of history
       expireDuplicatesFirst = true;
       share = true;
     };
@@ -50,8 +53,8 @@ in
       enable = true;
       plugins = [
         "git"
-        "sudo"           # press Esc twice to prefix the last command with sudo
-        "extract"        # `x <anything>` unpacks it
+        "sudo" # press Esc twice to prefix the last command with sudo
+        "extract" # `x <anything>` unpacks it
       ];
       custom = "${config.xdg.configHome}/oh-my-zsh/custom";
       theme = "catppuccin";

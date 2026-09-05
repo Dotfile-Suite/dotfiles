@@ -1,11 +1,14 @@
 # https://github.com/hyprwm/Hyprland
-{pkgs, lib, ...}:
-let
-  sandbox = import ../../../lib/sandbox-apps.nix { inherit pkgs lib; };
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  sandbox = import ../../../lib/sandbox-apps.nix {inherit pkgs lib;};
 
   sandboxedApps = sandbox.mkSandboxedApps [
-    { attr = "grim"; }
-    { attr = "slurp"; }
+    {attr = "grim";}
+    {attr = "slurp";}
   ];
 in {
   imports = [
@@ -33,18 +36,20 @@ in {
     fi
   '';
 
-  home.packages = with pkgs; [
-    # NOTE: hyprland, hyprpaper, and hypridle used to be listed here. They're
-    # now provided by wayland.windowManager.hyprland.finalPackage and the
-    # services.hyprpaper / services.hypridle modules. Listing them again put a
-    # second, differently-versioned copy on PATH -- a classic source of
-    # "why is my config not applying" after a flake update.
-    wl-clipboard
-    wlogout
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland
-    gcr_4 # Provides org.gnome.keyring.SystemPrompter
-  ] ++ sandboxedApps;
+  home.packages = with pkgs;
+    [
+      # NOTE: hyprland, hyprpaper, and hypridle used to be listed here. They're
+      # now provided by wayland.windowManager.hyprland.finalPackage and the
+      # services.hyprpaper / services.hypridle modules. Listing them again put a
+      # second, differently-versioned copy on PATH -- a classic source of
+      # "why is my config not applying" after a flake update.
+      wl-clipboard
+      wlogout
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-hyprland
+      gcr_4 # Provides org.gnome.keyring.SystemPrompter
+    ]
+    ++ sandboxedApps;
 
   # Auto-login keyring
   services.gnome-keyring.enable = true;

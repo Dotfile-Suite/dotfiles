@@ -1,4 +1,8 @@
-{inputs, username, ...}: {
+{
+  inputs,
+  username,
+  ...
+}: {
   nix = {
     # Pin the `nixpkgs` flake registry entry to this flake's own nixpkgs
     # input, so `nix shell nixpkgs#...`/`comma` (used to sandbox-run
@@ -10,7 +14,7 @@
     settings = {
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
-      trusted-users = [ "root" username ];
+      trusted-users = ["root" username];
     };
 
     # Garbage collection is handled by `programs.nh.clean`, see

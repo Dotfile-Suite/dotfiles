@@ -1,6 +1,6 @@
 # example-standalone -- generic, minimal host skeleton.
 #
-# Intended role (see REDESIGN.md): client and server roles combined on one
+# Intended role (see docs/REDESIGN.md): client and server roles combined on one
 # machine -- the fully local-first case, useful when only one machine
 # exists or a client should keep working with nothing else on the network.
 # Deliberately bare for now -- boot loader, networking, and the shared

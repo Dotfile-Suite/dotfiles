@@ -2,8 +2,8 @@
 
 Guidance for Claude Code (and any other agent or contributor) working in this
 repository. This document sets intentions, not a spec for a finished system —
-see [REDESIGN.md](REDESIGN.md) for where the project is headed and
-[TODO.md](TODO.md) for known, deferred gaps.
+see [REDESIGN.md](docs/REDESIGN.md) for where the project is headed and
+[TODO.md](docs/TODO.md) for known, deferred gaps.
 
 ## What this is
 
@@ -13,7 +13,7 @@ and `hosts/common/users/example` are templates, not a description of any real
 machine. A real deployment copies a template (see `bootstrap.sh`) and
 customizes it; nothing personal or hardware-specific belongs in `common/`.
 
-The long-term direction (REDESIGN.md) is a local-first, actor-model computing
+The long-term direction (docs/REDESIGN.md) is a local-first, actor-model computing
 suite spanning one machine to many. That vision is aspirational. Don't let it
 justify speculative abstraction now — see "Build for what exists" below.
 
@@ -92,7 +92,7 @@ outside the declarative config, mutating a generation in place).
 well-trodden NixOS module option before hand-rolling a systemd unit or a
 new abstraction. An abstraction earns its place once the same pattern
 shows up for real three times — not on the first guess at what might be
-needed. This applies to REDESIGN.md's own ambitions too: prove one small
+needed. This applies to docs/REDESIGN.md's own ambitions too: prove one small
 piece works before generalizing it.
 
 **Build for what exists.**
@@ -108,7 +108,7 @@ Managed with sops-nix (see `hosts/common/users/example/default.nix` and
 secrets or system-defined files besides moves done through `mv`. For 
 info on the secrets system, see that README for the walkthrough. Never 
 commit an age private key or an unencrypted secret. Broader secrets-
-management follow-ups are tracked in `TODO.md`, not solved ad hoc inside
+management follow-ups are tracked in `docs/TODO.md`, not solved ad hoc inside
 unrelated changes. Secrets management should be, in most cases, be left
 to the user.
 
@@ -129,7 +129,7 @@ to the user.
 
 ## Living documents
 
-- [REDESIGN.md](REDESIGN.md) — long-term vision. Aspirational, not a spec
+- [REDESIGN.md](docs/REDESIGN.md) — long-term vision. Aspirational, not a spec
   for the current task.
-- [TODO.md](TODO.md) — real, deferred, non-blocking follow-ups. Prune items
+- [TODO.md](docs/TODO.md) — real, deferred, non-blocking follow-ups. Prune items
   as they're resolved.
