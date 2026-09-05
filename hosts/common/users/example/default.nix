@@ -1,24 +1,43 @@
 {
   pkgs,
+  lib,
   config,
   inputs,
   username,
+  extraUsers ? [],
   ...
 }: let
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
   home = "/home/${username}";
+
+  # Additional, non-admin accounts (see flake.nix's `extraUsers`). They get
+  # an ordinary account and the same home-manager config as the primary
+  # user below -- not the sops-managed SSH identity or admin groups, which
+  # stay scoped to `username`. Extend this if a real multi-user host wants
+  # per-user descriptions/groups instead of these generic defaults.
+  mkExtraUser = name: {
+    isNormalUser = true;
+    description = name;
+    shell = pkgs.zsh;
+    extraGroups = ["networkmanager"];
+    packages = [pkgs.home-manager];
+  };
 in {
   imports = [
     inputs.sops-nix.nixosModules.sops
   ];
 
-  users.users.${username} = {
-    isNormalUser = true;
-    description = "Example User";
-    shell = pkgs.zsh;
-    extraGroups = ["networkmanager" "wheel" "dialout"] ++ ifTheyExist ["wireshark" "docker" "libvirtd" "mysql" "network" "git"];
-    packages = [pkgs.home-manager];
-  };
+  users.users =
+    {
+      ${username} = {
+        isNormalUser = true;
+        description = "Example User";
+        shell = pkgs.zsh;
+        extraGroups = ["networkmanager" "wheel" "dialout"] ++ ifTheyExist ["wireshark" "docker" "libvirtd" "mysql" "network" "git"];
+        packages = [pkgs.home-manager];
+      };
+    }
+    // lib.genAttrs extraUsers mkExtraUser;
 
   sops = {
     age.keyFile = "${home}/.config/sops/age/keys.txt";
@@ -51,6 +70,14 @@ in {
     };
   };
 
-  # Import this user's personal/home configurations
-  home-manager.users.${username} = import ../../../../home/${config.networking.hostName}.nix;
+  # Every user on this host -- the primary user and any extraUsers -- gets
+  # the same home-manager config, based off home/<hostname>.nix. That file
+  # itself doesn't set home.username/homeDirectory (see home/base.nix), so
+  # it's identical for every user; each one is individualized here, by
+  # wrapping it with its own name via `imports`.
+  home-manager.users = lib.genAttrs ([username] ++ extraUsers) (name: {
+    imports = [../../../../home/${config.networking.hostName}.nix];
+    home.username = lib.mkDefault name;
+    home.homeDirectory = lib.mkDefault "/home/${name}";
+  });
 }

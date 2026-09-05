@@ -60,6 +60,14 @@
       # specialArgs/extraSpecialArgs instead of hardcoding the string.
       username = "example";
 
+      # Additional, non-admin accounts for a shared/multi-user machine.
+      # Each one gets an ordinary user account plus the same home-manager
+      # config as the primary user (see
+      # hosts/common/users/example/default.nix) -- not the primary's
+      # sops-managed SSH identity or admin groups. Empty by default; add
+      # names here for a real multi-user host, e.g. [ "alice" "bob" ].
+      extraUsers = [];
+
       systems = ["x86_64-linux"];
       forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
 
@@ -77,7 +85,7 @@
       # matching hosts/<name>/ and home/<name>.nix, see bootstrap.sh).
       mkHost = name:
         lib.nixosSystem {
-          specialArgs = {inherit inputs outputs username;};
+          specialArgs = {inherit inputs outputs username extraUsers;};
           modules = [
             ./hosts/${name}
 
@@ -87,7 +95,7 @@
             ({config, ...}: {
               home-manager.backupFileExtension = "bak";
               home-manager.extraSpecialArgs = {
-                inherit inputs outputs username;
+                inherit inputs outputs username extraUsers;
                 inherit (config.networking) hostName;
               };
             })

@@ -1,20 +1,13 @@
 # Minimal home-manager base for any NixOS host: just the generic CLI/shell
-# core, plus the two values every home-manager config needs (username,
-# homeDirectory). No desktop stack -- a real host's own home/<hostname>.nix
-# opts into whatever it actually needs from ./common/optional (apps,
-# desktops/hyprland, desktops/waybar, ...).
-{
-  config,
-  username,
-  ...
-}: {
+# core. home.username and home.homeDirectory are intentionally NOT set
+# here -- hosts/common/users/example/default.nix sets them per user when it
+# wires this file into home-manager.users (once for the primary user, once
+# per name in extraUsers). That's what makes this same file usable
+# unmodified for every user on a host, instead of baking in one username.
+{...}: {
   imports = [
     ./common/core
   ];
 
-  home = {
-    inherit username;
-    homeDirectory = "/home/${config.home.username}";
-    stateVersion = "26.05";
-  };
+  home.stateVersion = "26.05";
 }
