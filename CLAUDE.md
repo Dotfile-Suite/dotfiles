@@ -114,11 +114,9 @@ Managed with sops-nix (see `hosts/common/secrets/default.nix` and
 needs a matching `hosts/common/secrets/<user>.yaml`; a missing one fails
 the build at eval time with a clear message rather than a cryptic sops
 error. `./bootstrap.sh <host>` generates one automatically for any user
-missing it — that's the normal path, not the manual `sops`/`ssh-keygen`
-walkthrough in the README (kept there as a fallback and for reference).
-Only ever commit *encrypted* secrets; never commit an age private key or
-an unencrypted one. Broader secrets-management follow-ups are tracked in
-`docs/TODO.md`, not solved ad hoc inside unrelated changes.
+missing it. Only ever commit *encrypted* secrets; never commit an age
+private key or an unencrypted one. Broader secrets-management follow-ups
+are tracked in `docs/TODO.md`, not solved ad hoc inside unrelated changes.
 
 ## Do not
 
