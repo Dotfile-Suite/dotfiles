@@ -61,11 +61,12 @@
       username = "example";
 
       # Additional, non-admin accounts for a shared/multi-user machine.
-      # Each one gets an ordinary user account plus the same home-manager
-      # config as the primary user (see
-      # hosts/common/users/example/default.nix) -- not the primary's
-      # sops-managed SSH identity or admin groups. Empty by default; add
-      # names here for a real multi-user host, e.g. [ "alice" "bob" ].
+      # Each one gets an ordinary user account, the same home-manager
+      # config as the primary user, and their own sops-managed SSH/git
+      # identity (see hosts/common/users/example/default.nix and
+      # hosts/common/secrets/) -- just not the primary's admin groups.
+      # Empty by default; add names here for a real multi-user host, e.g.
+      # [ "alice" "bob" ].
       extraUsers = [];
 
       systems = ["x86_64-linux"];
@@ -103,6 +104,10 @@
         };
     in {
       inherit lib;
+
+      # Authoritative user list for tooling (bootstrap.sh) that needs it
+      # without re-deriving/guessing it in bash: `nix eval --json .#users`.
+      users = [username] ++ extraUsers;
 
       myPkgs = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
 

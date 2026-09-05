@@ -2,10 +2,6 @@
   programs.git = {
     enable = true;
     settings = {
-      user = {
-        email = "git-mail@isaacgeorge.net";
-        name = "Isaac George";
-      };
       core.editor = "nvim";
       init.defaultBranch = "master";
       merge.conflictStyle = "zdiff3";
@@ -13,16 +9,26 @@
       push.autoSetupRemote = true;
 
       #sendmail = {
-      #    from = "Isaac George <git-mail@isaacgeorge.net>";
+      #    from = "Example User <example@example.com>";
       #    smtpServer = "127.0.0.1";
       #    smtpServerPort = 1025;
       #    smtpUser = "example";
       #    smtpPassword = "/HxMou3HXfi+RaEAxry8w6Ws0tybPdVPHJxpSNvAC0I="; # This is a localhost only password so should be fine
       #};
     };
+    # user.name/user.email come from the per-user sops-managed identity
+    # file instead of a hardcoded value here -- see
+    # hosts/common/secrets/default.nix and hosts/common/secrets/README.md.
+    # Git silently skips a missing include path, so this is safe even
+    # before that secret exists; it just errors normally at commit time
+    # ("Please tell me who you are") instead of committing under someone
+    # else's shared identity.
+    includes = [
+      {path = "${config.home.homeDirectory}/.config/git/identity.gitconfig";}
+    ];
     signing = {
       # Reuses the sops-managed SSH identity (see
-      # hosts/common/users/example/default.nix) instead of a separate GPG
+      # hosts/common/secrets/default.nix) instead of a separate GPG
       # key. Signs directly with the private key file rather than going
       # through ssh-agent, since nothing here loads this key into one.
       format = "ssh";

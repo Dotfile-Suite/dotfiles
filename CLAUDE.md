@@ -28,7 +28,11 @@ justify speculative abstraction now — see "Build for what exists" below.
     virtualisation, wireguard, ...). Never imported by an `example-*` host
     by default; a real host opts in explicitly.
   - `common/users/example/` — parameterized user provisioning (primary
-    `username` + `extraUsers`), sops secrets, home-manager wiring.
+    `username` + `extraUsers`) and home-manager wiring; delegates each
+    user's SSH/git identity to `common/secrets/`.
+  - `common/secrets/` — per-user sops secrets. `default.nix` is a curried
+    module (`{name}: {...}: {...}`, same pattern as `optional/wireguard.nix`)
+    imported once per user; see its own comments and `README.md`.
   - `example-client/`, `example-server/`, `example-standalone/` — minimal
     host skeletons; see each one's own comment for its intended role.
 - `home/` — home-manager config, mirroring the same core/optional split.
@@ -36,9 +40,11 @@ justify speculative abstraction now — see "Build for what exists" below.
   - `example-*.nix` — per-host entry points, imported once per user on
     that host (see `hosts/common/users/example/default.nix`).
 - `bootstrap.sh` — generates `hardware-configuration.nix` on the target
-  machine and runs `nixos-install`/`nixos-rebuild switch`. Flakes can't
-  shell out to `nixos-generate-config` themselves; this is the documented
-  replacement.
+  machine, ensures every configured user has a `common/secrets/<user>.yaml`
+  (generating one if missing), and runs `nixos-install`/`nixos-rebuild
+  switch`. Flakes can't shell out to `nixos-generate-config` themselves or
+  read/write files outside the store during evaluation; this is the
+  documented replacement for both.
 - `pkgs/` — custom package derivations (template stub today).
 - `.claude/skills/grug/` — invoke for a blunt complexity gut-check.
 
@@ -118,12 +124,15 @@ thing first, generalize once a second real host actually needs it.
 
 ## Secrets
 
-Managed with sops-nix (see `hosts/common/users/example/default.nix` and
-`hosts/common/users/example/secrets/README.md`). Only ever commit
-*encrypted* secrets. The committed `secrets/ssh.yaml` is a placeholder and
-must be replaced with a real, locally-generated key before actual use — see
-that README for the walkthrough. Never commit an age private key or an
-unencrypted secret. Broader secrets-management follow-ups are tracked in
+Managed with sops-nix (see `hosts/common/secrets/default.nix` and
+`hosts/common/secrets/README.md`). Every user in `username`/`extraUsers`
+needs a matching `hosts/common/secrets/<user>.yaml`; a missing one fails
+the build at eval time with a clear message rather than a cryptic sops
+error. `./bootstrap.sh <host>` generates one automatically for any user
+missing it — that's the normal path, not the manual `sops`/`ssh-keygen`
+walkthrough in the README (kept there as a fallback and for reference).
+Only ever commit *encrypted* secrets; never commit an age private key or
+an unencrypted one. Broader secrets-management follow-ups are tracked in
 `TODO.md`, not solved ad hoc inside unrelated changes.
 
 ## Do not
