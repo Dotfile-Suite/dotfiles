@@ -18,9 +18,9 @@
         batdiff
         batman
         batgrep
-        batwatch  # re-run and re-highlight a file on change; good for logs
+        batwatch # re-run and re-highlight a file on change; good for logs
         prettybat
-      ;
+        ;
     };
   };
 

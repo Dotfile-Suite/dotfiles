@@ -1,5 +1,9 @@
-{pkgs, lib, ...} : let
-  sandbox = import ../../lib/sandbox-apps.nix { inherit pkgs lib; };
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  sandbox = import ../../lib/sandbox-apps.nix {inherit pkgs lib;};
 
   editorDesktopFile = pkgs.writeTextFile {
     name = "nvim.desktop";
@@ -24,7 +28,7 @@
   fileManagerDesktop = "yazi.desktop";
 
   sandboxedApps = sandbox.mkSandboxedApps [
-    { attr = "zathura"; }
+    {attr = "zathura";}
   ];
 in {
   home.packages = sandboxedApps;
@@ -48,45 +52,45 @@ in {
     enable = true;
     defaultApplications = {
       # Browser-related
-      "text/html" = [ editorDesktop ];
-      "application/xhtml+xml" = [ editorDesktop ];
-      "application/xml" = [ editorDesktop ];
-      "application/pdf" = [ documentDesktop ];
-      "x-scheme-handler/http" = [ browserDesktop ];
-      "x-scheme-handler/https" = [ browserDesktop ];
-      "x-scheme-handler/ftp" = [ browserDesktop ];
+      "text/html" = [editorDesktop];
+      "application/xhtml+xml" = [editorDesktop];
+      "application/xml" = [editorDesktop];
+      "application/pdf" = [documentDesktop];
+      "x-scheme-handler/http" = [browserDesktop];
+      "x-scheme-handler/https" = [browserDesktop];
+      "x-scheme-handler/ftp" = [browserDesktop];
 
       # Directories
-      "inode/directory" = [ fileManagerDesktop ];
+      "inode/directory" = [fileManagerDesktop];
 
       # Text and code files
-      "text/plain" = [ editorDesktop ];
-      "text/markdown" = [ editorDesktop ];
-      "text/x-shellscript" = [ editorDesktop ];
-      "application/json" = [ editorDesktop ];
-      "application/x-yaml" = [ editorDesktop ];
-      "application/javascript" = [ editorDesktop ];
-      "text/x-python" = [ editorDesktop ];
-      "text/x-csrc" = [ editorDesktop ];
-      "text/x-c++src" = [ editorDesktop ];
-      "text/x-rustsrc" = [ editorDesktop ];
+      "text/plain" = [editorDesktop];
+      "text/markdown" = [editorDesktop];
+      "text/x-shellscript" = [editorDesktop];
+      "application/json" = [editorDesktop];
+      "application/x-yaml" = [editorDesktop];
+      "application/javascript" = [editorDesktop];
+      "text/x-python" = [editorDesktop];
+      "text/x-csrc" = [editorDesktop];
+      "text/x-c++src" = [editorDesktop];
+      "text/x-rustsrc" = [editorDesktop];
 
       # Office documents
-      "application/msword" = [ "libreoffice-writer.desktop" ];
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = [ "libreoffice-writer.desktop" ];
-      "application/vnd.ms-excel" = [ "libreoffice-calc.desktop" ];
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = [ "libreoffice-calc.desktop" ];
-      "application/vnd.ms-powerpoint" = [ "libreoffice-impress.desktop" ];
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = [ "libreoffice-impress.desktop" ];
-      "application/vnd.oasis.opendocument.text" = [ "libreoffice-writer.desktop" ];
-      "application/vnd.oasis.opendocument.spreadsheet" = [ "libreoffice-calc.desktop" ];
-      "application/vnd.oasis.opendocument.presentation" = [ "libreoffice-impress.desktop" ];
+      "application/msword" = ["libreoffice-writer.desktop"];
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = ["libreoffice-writer.desktop"];
+      "application/vnd.ms-excel" = ["libreoffice-calc.desktop"];
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = ["libreoffice-calc.desktop"];
+      "application/vnd.ms-powerpoint" = ["libreoffice-impress.desktop"];
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = ["libreoffice-impress.desktop"];
+      "application/vnd.oasis.opendocument.text" = ["libreoffice-writer.desktop"];
+      "application/vnd.oasis.opendocument.spreadsheet" = ["libreoffice-calc.desktop"];
+      "application/vnd.oasis.opendocument.presentation" = ["libreoffice-impress.desktop"];
 
       # Images
-      "image/svg+xml" = [ browserDesktop ];
-      "image/png" = [ imageDesktop ];
-      "image/jpeg" = [ imageDesktop ];
-      "image/webp" = [ imageDesktop ];
+      "image/svg+xml" = [browserDesktop];
+      "image/png" = [imageDesktop];
+      "image/jpeg" = [imageDesktop];
+      "image/webp" = [imageDesktop];
     };
   };
 }

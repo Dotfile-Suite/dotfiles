@@ -4,9 +4,9 @@
     platformTheme.name = "qtct";
     style = {
       package = with pkgs; (catppuccin-kvantum.override {
-          accent = "mauve";
-          variant = "mocha";
-        });
+        accent = "mauve";
+        variant = "mocha";
+      });
       name = "kvantum";
     };
   };

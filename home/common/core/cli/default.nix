@@ -4,20 +4,19 @@
   lib,
   inputs,
   ...
-}: 
-let
-  sandbox = import ../../lib/sandbox-apps.nix { inherit pkgs lib; };
+}: let
+  sandbox = import ../../lib/sandbox-apps.nix {inherit pkgs lib;};
 
   sandboxedApps = sandbox.mkSandboxedApps [
-    { attr = "grim"; }
-    { attr = "slurp"; }
-    { attr = "ncdu"; }
-    { attr = "pciutils"; }
-    { attr = "usbutils"; }
-    { attr = "age"; }
-    { attr = "bottom"; }
-    { attr = "man-pages"; }
-    { attr = "man-pages-posix"; }
+    {attr = "grim";}
+    {attr = "slurp";}
+    {attr = "ncdu";}
+    {attr = "pciutils";}
+    {attr = "usbutils";}
+    {attr = "age";}
+    {attr = "bottom";}
+    {attr = "man-pages";}
+    {attr = "man-pages-posix";}
   ];
 in {
   imports = [
@@ -38,13 +37,15 @@ in {
     ./zoxide.nix
   ];
 
-  home.packages = with pkgs; [
-    coreutils-full
-    curl
-    fd # Required for fzf
-    glib # MTP for USB Phone mounting
-    gnumake
-    libnotify
-    libxcrypt
-  ] ++ sandboxedApps;
+  home.packages = with pkgs;
+    [
+      coreutils-full
+      curl
+      fd # Required for fzf
+      glib # MTP for USB Phone mounting
+      gnumake
+      libnotify
+      libxcrypt
+    ]
+    ++ sandboxedApps;
 }

@@ -1,5 +1,5 @@
 {config, ...}: let
-  # Was hardcoded to /home/mrgeotech in four places. This works on any user,
+  # Was hardcoded to a specific home directory in four places. This works on any user,
   # and breaks loudly at eval time rather than silently at runtime.
   wallpaperDir = "${config.home.homeDirectory}/.config/hypr";
 

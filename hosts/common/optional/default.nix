@@ -11,7 +11,6 @@
     ./keychron.nix
     ./pipewire.nix
     ./steam.nix
-    ./labrador.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -22,14 +21,14 @@
   security.polkit.enable = true;
 
   fonts.fontDir.enable = true;
-  
+
   services = {
     printing.enable = true;
 
     gnome.gnome-keyring.enable = true;
 
     udev.extraRules = ''
-            SUBSYSTEM=="usb", ATTR{idVendor}=="09fb", ATTR{idProduct}=="6001", MODE="0666"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="09fb", ATTR{idProduct}=="6001", MODE="0666"
     '';
   };
 

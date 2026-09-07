@@ -1,4 +1,4 @@
-{inputs, pkgs, ...} : {
+{pkgs, ...}: {
   virtualisation = {
     docker = {
       enable = true;
@@ -23,12 +23,10 @@
   };
   services.spice-vdagentd.enable = true;
   programs.virt-manager.enable = true;
-  networking.firewall.trustedInterfaces = [ "virbr0" ];
-  
+  networking.firewall.trustedInterfaces = ["virbr0"];
+
   environment.systemPackages = with pkgs; [
-  #  inputs.winapps.packages.${pkgs.system}.winapps
-  #  inputs.winapps.packages.${pkgs.system}.winapps-launcher
-  #  pkgs.freerdp
+    #  pkgs.freerdp
     #bottles
     dnsmasq
   ];

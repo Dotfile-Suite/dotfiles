@@ -40,16 +40,6 @@
     ghostty = {
       url = "github:ghostty-org/ghostty";
     };
-
-    winapps = {
-      url = "github:winapps-org/winapps";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    labrador = {
-      url = "github:espotek-org/Labrador?rev=3119205cdde183039062621c1204584f1ec1c5ac";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
@@ -58,122 +48,79 @@
     home-manager,
     catppuccin,
     ghostty,
-    labrador,
     ...
-    } @ inputs: 
-    let
-      inherit (self) outputs;
-      lib = nixpkgs.lib // home-manager.lib;
+  } @ inputs: let
+    inherit (self) outputs;
+    lib = nixpkgs.lib // home-manager.lib;
 
-      systems = ["x86_64-linux"];
-      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+    # Single source of truth for the primary user's name. Every module
+    # that needs it (system user account, home-manager, sops secret
+    # paths, autologin, ssh/wireguard paths, ...) reads this via
+    # specialArgs/extraSpecialArgs instead of hardcoding the string.
+    username = "example";
 
-      pkgsFor = lib.genAttrs systems (system:
+    # Additional, non-admin accounts for a shared/multi-user machine.
+    # Each one gets an ordinary user account, the same home-manager
+    # config as the primary user, and their own sops-managed SSH/git
+    # identity (see hosts/common/users/example/default.nix and
+    # hosts/common/secrets/) -- just not the primary's admin groups.
+    # Empty by default; add names here for a real multi-user host, e.g.
+    # [ "alice" "bob" ].
+    extraUsers = [];
+
+    systems = ["x86_64-linux"];
+    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+
+    pkgsFor = lib.genAttrs systems (
+      system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         }
-      );
+    );
 
-      #labrador-fixed = lib.genAttrs systems (system:
-      #  labrador.packages.${system}.default.overrideAttrs (old: {
-      #    src = pkgsFor.${system}.fetchFromGitHub {
-      #      owner = "espotek-org";
-      #      repo = "Labrador";
-      #      rev = "3119205cdde183039062621c1204584f1ec1c5ac";
-      #      hash = "sha256-ERSHtiuq1l3sEk5OdVxoG1ri/4HZ0Fi4KFkWW09ZKyI=";
-      #      fetchSubmodules = true;
-      #    };
-      #    #postPatch = ''
-      #    #  echo 'QMAKE_CFLAGS += -std=c11' >> Desktop_Interface/Labrador.pro
-      #    #'';
-      #  })
-      #);
-    in {
-      inherit lib;
+    # Every host below is built the same way, differing only in which
+    # ./hosts/<name> directory gets imported -- see hosts/example-*/default.nix
+    # for what actually distinguishes client/server/standalone. Add a new
+    # machine by adding one line to nixosConfigurations below (and a
+    # matching hosts/<name>/ and home/<name>.nix, see bootstrap.sh).
+    mkHost = name:
+      lib.nixosSystem {
+        specialArgs = {inherit inputs outputs username extraUsers;};
+        modules = [
+          ./hosts/${name}
 
-      myPkgs = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+          catppuccin.nixosModules.catppuccin
+          home-manager.nixosModules.home-manager
 
-      formatter = forEachSystem (pkgs: pkgs.alejandra);
-
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
-
-      nixosConfigurations = {
-        # Desktop
-        mrgeotech-pc = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
-          modules = [
-            ./hosts/mrgeotech-pc
-
-            catppuccin.nixosModules.catppuccin
-            home-manager.nixosModules.home-manager
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-
-        # Laptop
-        mrgeotech-laptop = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
-          modules = [
-            ./hosts/mrgeotech-laptop
-
-            home-manager.nixosModules.home-manager
-            catppuccin.nixosModules.catppuccin
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-
-        # New Laptop (Zenbook)
-        mrgeotech-zenbook = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
-          modules = [
-            ./hosts/mrgeotech-zenbook
-
-            home-manager.nixosModules.home-manager
-            catppuccin.nixosModules.catppuccin
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
-
-        # steam-machine
-        steam-machine = lib.nixosSystem {
-          specialArgs = {inherit inputs outputs;};
-          modules = [
-            ./hosts/steam-machine
-
-            home-manager.nixosModules.home-manager
-            catppuccin.nixosModules.catppuccin
-
-            ({config, ...}: {
-              home-manager.backupFileExtension = "bak";
-              home-manager.extraSpecialArgs = {
-                inherit inputs outputs;
-                inherit (config.networking) hostName;
-              };
-            })
-          ];
-        };
+          ({config, ...}: {
+            home-manager.backupFileExtension = "bak";
+            home-manager.extraSpecialArgs = {
+              inherit inputs outputs username extraUsers;
+              inherit (config.networking) hostName;
+            };
+          })
+        ];
       };
-    };
+  in {
+    inherit lib;
+
+    # Authoritative user list for tooling (bootstrap.sh) that needs it
+    # without re-deriving/guessing it in bash: `nix eval --json .#users`.
+    users = [username] ++ extraUsers;
+
+    myPkgs = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+
+    formatter = forEachSystem (pkgs: pkgs.alejandra);
+
+    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
+
+    nixosConfigurations =
+      lib.genAttrs [
+        "example-client"
+        "example-server"
+        "example-standalone"
+      ]
+      mkHost;
+  };
 }

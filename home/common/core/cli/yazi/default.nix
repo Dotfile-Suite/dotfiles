@@ -15,13 +15,13 @@
     plugins = {
       inherit
         (pkgs.yaziPlugins)
-        chmod            # bulk chmod on selected files
-        diff             # diff selection against the hovered file
-        full-border      # rounded border matching the rest of the theme
-        mount            # mount/unmount removable media without leaving yazi
+        chmod # bulk chmod on selected files
+        diff # diff selection against the hovered file
+        full-border # rounded border matching the rest of the theme
+        mount # mount/unmount removable media without leaving yazi
         relative-motions # THE one: type 5j to jump 5 down, like vim
-        smart-enter      # `l` opens files and enters directories
-        toggle-pane      # maximize preview / hide parent
+        smart-enter # `l` opens files and enters directories
+        toggle-pane # maximize preview / hide parent
         ;
       # git status column disabled for now: nixpkgs' yaziPlugins.git
       # (currently pinned to yazi-rs/plugins@b9598e6, 2026-08-03) predates
@@ -42,7 +42,7 @@
         sort_dir_first = true;
         sort_reverse = false;
         linemode = "size";
-        ratio = [ 1 3 4 ];  # narrower parent, wider preview
+        ratio = [1 3 4]; # narrower parent, wider preview
       };
 
       preview = {
@@ -59,37 +59,123 @@
       # handing the whole thing to the shell, it does NOT pass files as
       # extra argv, so shell-style "$@"/"$1" here always expand empty.
       opener = {
-        edit = [{ run = "nvim %s"; block = true; desc = "nvim"; }];
-        play = [{ run = "mpv --force-window %s"; orphan = true; desc = "mpv"; }];
-        pdf = [{ run = "zathura %s"; orphan = true; desc = "zathura"; }];
-        image = [{ run = "imv %s"; orphan = true; desc = "imv"; }];
-        extract = [{ run = "ouch decompress %s"; desc = "extract here"; }];
-        reveal = [{ run = ''exiftool %s1; echo "Press enter to exit"; read _''; block = true; desc = "exiftool"; }];
+        edit = [
+          {
+            run = "nvim %s";
+            block = true;
+            desc = "nvim";
+          }
+        ];
+        play = [
+          {
+            run = "mpv --force-window %s";
+            orphan = true;
+            desc = "mpv";
+          }
+        ];
+        pdf = [
+          {
+            run = "zathura %s";
+            orphan = true;
+            desc = "zathura";
+          }
+        ];
+        image = [
+          {
+            run = "imv %s";
+            orphan = true;
+            desc = "imv";
+          }
+        ];
+        extract = [
+          {
+            run = "ouch decompress %s";
+            desc = "extract here";
+          }
+        ];
+        reveal = [
+          {
+            run = ''exiftool %s1; echo "Press enter to exit"; read _'';
+            block = true;
+            desc = "exiftool";
+          }
+        ];
       };
 
       open.prepend_rules = [
-        { mime = "application/pdf"; use = "pdf"; }
-        { mime = "image/*"; use = [ "image" "reveal" ]; }
-        { mime = "{audio,video}/*"; use = [ "play" "reveal" ]; }
-        { mime = "application/{zip,gzip,x-tar,x-bzip*,x-7z-compressed,x-rar,xz}"; use = [ "extract" "reveal" ]; }
-        { url = "*/"; use = [ "edit" "open" "reveal" ]; }
+        {
+          mime = "application/pdf";
+          use = "pdf";
+        }
+        {
+          mime = "image/*";
+          use = ["image" "reveal"];
+        }
+        {
+          mime = "{audio,video}/*";
+          use = ["play" "reveal"];
+        }
+        {
+          mime = "application/{zip,gzip,x-tar,x-bzip*,x-7z-compressed,x-rar,xz}";
+          use = ["extract" "reveal"];
+        }
+        {
+          url = "*/";
+          use = ["edit" "open" "reveal"];
+        }
       ];
     };
 
     keymap = {
       mgr.prepend_keymap = [
         # --- vim-style navigation additions -----------------------------
-        { on = "l"; run = "plugin smart-enter"; desc = "Enter dir or open file"; }
-        { on = [ "g" "r" ]; run = ''shell -- ya emit cd "$(git rev-parse --show-toplevel)"''; desc = "Go to repo root"; }
-        { on = [ "g" "n" ]; run = "cd ~/nixos-config"; desc = "Go to nix config"; }
-        { on = "T"; run = "plugin toggle-pane max-preview"; desc = "Maximize preview"; }
-        { on = "<C-u>"; run = "arrow -50%"; desc = "Half page up"; }
-        { on = "<C-d>"; run = "arrow 50%"; desc = "Half page down"; }
+        {
+          on = "l";
+          run = "plugin smart-enter";
+          desc = "Enter dir or open file";
+        }
+        {
+          on = ["g" "r"];
+          run = ''shell -- ya emit cd "$(git rev-parse --show-toplevel)"'';
+          desc = "Go to repo root";
+        }
+        {
+          on = ["g" "n"];
+          run = "cd ~/nixos-config";
+          desc = "Go to nix config";
+        }
+        {
+          on = "T";
+          run = "plugin toggle-pane max-preview";
+          desc = "Maximize preview";
+        }
+        {
+          on = "<C-u>";
+          run = "arrow -50%";
+          desc = "Half page up";
+        }
+        {
+          on = "<C-d>";
+          run = "arrow 50%";
+          desc = "Half page down";
+        }
 
         # --- actions ----------------------------------------------------
-        { on = [ "c" "m" ]; run = "plugin chmod"; desc = "chmod selection"; }
-        { on = "M"; run = "plugin mount"; desc = "Mount manager"; }
-        { on = "<C-d>"; run = "plugin diff"; desc = "Diff against hovered"; }
+        {
+          on = ["c" "m"];
+          run = "plugin chmod";
+          desc = "chmod selection";
+        }
+        {
+          on = "M";
+          run = "plugin mount";
+          desc = "Mount manager";
+        }
+        {
+          on = "<C-d>";
+          run = "plugin diff";
+          desc = "Diff against hovered";
+        }
 
         # Yank normally (so `p` still pastes inside yazi) *and* mirror the
         # selection's absolute path(s) to the Wayland clipboard so they can
@@ -97,13 +183,25 @@
         # a separate `y p` chord shadows the plain `y` yank entirely, since
         # yazi then treats `y` as a chord prefix and only offers `p`,
         # instead of yanking on its own.
-        { on = "y"; run = [ "yank" ''shell -- printf "%s\n" "$@" | wl-copy'' ]; desc = "Copy files (yank + clipboard)"; }
+        {
+          on = "y";
+          run = ["yank" ''shell -- printf "%s\n" "$@" | wl-copy''];
+          desc = "Copy files (yank + clipboard)";
+        }
 
         # Open a shell in the current directory; exit returns to yazi.
-        { on = "!"; run = ''shell "$SHELL" --block''; desc = "Shell here"; }
+        {
+          on = "!";
+          run = ''shell "$SHELL" --block'';
+          desc = "Shell here";
+        }
 
         # Bulk rename the selection in nvim.
-        { on = [ "c" "r" ]; run = "rename --cursor=before_ext"; desc = "Rename"; }
+        {
+          on = ["c" "r"];
+          run = "rename --cursor=before_ext";
+          desc = "Rename";
+        }
       ];
     };
 
@@ -124,12 +222,12 @@
 
   # Preview and opener dependencies. Without these, previews silently degrade.
   home.packages = with pkgs; [
-    ffmpeg         # video thumbnails + duration metadata
-    p7zip          # archive contents preview
-    poppler-utils  # PDF preview (pdftoppm)
-    imagemagick    # HEIC/SVG/RAW conversion for preview
-    exiftool       # the `reveal` opener
-    ouch           # single command for every archive format
-    chafa          # fallback preview where kitty protocol isn't available
+    ffmpeg # video thumbnails + duration metadata
+    p7zip # archive contents preview
+    poppler-utils # PDF preview (pdftoppm)
+    imagemagick # HEIC/SVG/RAW conversion for preview
+    exiftool # the `reveal` opener
+    ouch # single command for every archive format
+    chafa # fallback preview where kitty protocol isn't available
   ];
 }
